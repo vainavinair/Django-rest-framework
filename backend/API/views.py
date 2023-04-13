@@ -1,23 +1,23 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 import json
+from products.models import Product
+
+from django.forms.models import model_to_dict
+
+
 
 def api_home(request,*args,**kwrags):
-    # request -> HttpRequest -> Django
-    # request.body
-    print(request.GET) #url params
-    body = request.body #byte string of JSON data
+    model_data=Product.objects.all().order_by("?").first()
     data={}
-    # try block because body may not have data
-    try:
-        data=json.loads(body)
-    except:
-        pass
-    print(data.keys())
-    # data['headers']=request.headers #request.META but this is not serializable so we convert it to a dict
-    # print(request.headers)
-    data['params']= dict(request.GET)
-    data['headers']= dict(request.headers) 
-    data['content_type']= request.content_type
+    if model_data:
+        #serialization: we are turning a model instance into a python dictionary
+        # data['id']=model_data.id
+        # data['title']=model_data.title
+        # data['content']=model_data.content
+        # data['price']=model_data.price
+
+        # using model_to_dict()
+        data = model_to_dict(model_data, fields=['title']) # field parameter if not specified send all fields.
     return JsonResponse(data)
 
