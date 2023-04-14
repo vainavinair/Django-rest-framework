@@ -19,9 +19,9 @@ def api_home(request,*args,**kwrags):
     # instance=Product.objects.all().order_by("?").first()
     # data=request.data
     serializer= ProductSerializer(data=request.data)
-    if serializer.is_valid(raise_exception=True):
+    if serializer.is_valid(raise_exception=True): # raise excpetion gives exact reason for error
         # instance = serializer.save()
         print(serializer.data)
         return Response(serializer.data)
-    return Response({'invalid':'not good data'},status=400)
+    return Response({'invalid':'not good data'},status=400) #used to keep it abstract
 
