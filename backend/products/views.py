@@ -1,14 +1,15 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import generics, mixins
+from rest_framework import generics, mixins, permissions, authentication
 
 from django.shortcuts import get_object_or_404
 # from django.http import Http404
 
 from .models import Product
 from .serializers import ProductSerializer
+from .permissions import IsEditorPermissions
 
-
+ 
 class ProductDetailAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -36,6 +37,8 @@ class ProductDeleteAPIView(generics.DestroyAPIView):
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    authentication_classes = [authentication.SessionAuthentication]
+    permission_classes =[permissions.IsAdminUser ,IsEditorPermissions] #order matters
 
     def perform_create(self, serializer):
         # serializer.save(user=self.request.user)
@@ -79,32 +82,32 @@ class ProductListAPIView(generics.ListAPIView):
 
     
 
-class ProductMixinView(
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.CreateModelMixin,
-    generics.GenericAPIView
-    ):
+# class ProductMixinView(
+#     mixins.ListModelMixin,
+#     mixins.RetrieveModelMixin,
+#     mixins.CreateModelMixin,
+#     generics.GenericAPIView
+#     ):
 
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    lookup_field = 'pk'
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
+#     lookup_field = 'pk'
 
-    def get(self, request, *args, **kwargs): #http -> get
-        print(args,kwargs)
-        pk = kwargs.get("pk")
-        if pk is not None:
-            return self.retrieve(request, *args, **kwargs)
-        return self.list(request, *args, **kwargs)
+#     def get(self, request, *args, **kwargs): #http -> get
+#         print(args,kwargs)
+#         pk = kwargs.get("pk")
+#         if pk is not None:
+#             return self.retrieve(request, *args, **kwargs)
+#         return self.list(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs): #http -> post
-        return self.create(request, *args, **kwargs)
+#     def post(self, request, *args, **kwargs): #http -> post
+#         return self.create(request, *args, **kwargs)
     
-    def perform_create(self, serializer):
-        # serializer.save(user=self.request.user)
-        print(serializer.validated_data)
-        title = serializer.validated_data.get('title')
-        content = serializer.validated_data.get('content') or None
-        if content is None:
-            content = title
-        serializer.save(content=content)
+#     def perform_create(self, serializer):
+#         # serializer.save(user=self.request.user)
+#         print(serializer.validated_data)
+#         title = serializer.validated_data.get('title')
+#         content = serializer.validated_data.get('content') or None
+#         if content is None:
+#             content = title
+#         serializer.save(content=content)
