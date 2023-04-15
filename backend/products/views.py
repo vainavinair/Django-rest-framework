@@ -9,6 +9,8 @@ from .models import Product
 from .serializers import ProductSerializer
 from .permissions import IsEditorPermissions
 
+from API.authentication import TokenAuthentication
+
  
 class ProductDetailAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
@@ -37,7 +39,9 @@ class ProductDeleteAPIView(generics.DestroyAPIView):
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    authentication_classes = [authentication.SessionAuthentication]
+    authentication_classes = [authentication.SessionAuthentication,
+                              TokenAuthentication,
+                              ]
     permission_classes =[permissions.IsAdminUser ,IsEditorPermissions] #order matters
 
     def perform_create(self, serializer):
