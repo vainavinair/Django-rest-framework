@@ -1,23 +1,21 @@
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import generics, mixins, permissions, authentication
+from rest_framework import generics
 
 from django.shortcuts import get_object_or_404
 # from django.http import Http404
 
 from .models import Product
 from .serializers import ProductSerializer
-from .permissions import IsEditorPermissions
+from API.mixins import EditorPermsMixin
 
-from API.authentication import TokenAuthentication
 
  
-class ProductDetailAPIView(generics.RetrieveAPIView):
+class ProductDetailAPIView(EditorPermsMixin, generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     # lookup_field = 'pk'
 
-class ProductUpdateAPIView(generics.UpdateAPIView):
+class ProductUpdateAPIView(EditorPermsMixin, generics.UpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
@@ -26,7 +24,7 @@ class ProductUpdateAPIView(generics.UpdateAPIView):
         if not instance.content:
             instance.content = instance.title
 
-class ProductDeleteAPIView(generics.DestroyAPIView):
+class ProductDeleteAPIView(EditorPermsMixin,generics.DestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     # lookup_field = 'pk'
@@ -36,13 +34,9 @@ class ProductDeleteAPIView(generics.DestroyAPIView):
     
 
 
-class ProductListCreateAPIView(generics.ListCreateAPIView):
+class ProductListCreateAPIView(EditorPermsMixin, generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    authentication_classes = [authentication.SessionAuthentication,
-                              TokenAuthentication,
-                              ]
-    permission_classes =[permissions.IsAdminUser ,IsEditorPermissions] #order matters
 
     def perform_create(self, serializer):
         # serializer.save(user=self.request.user)

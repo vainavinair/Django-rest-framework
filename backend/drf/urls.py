@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/',include('API.urls')),
     path('api/products/',include('products.urls')),
+    path('api/products/v2',include('drf.routers')),
 ]
