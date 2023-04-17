@@ -6,16 +6,16 @@ from django.shortcuts import get_object_or_404
 
 from .models import Product
 from .serializers import ProductSerializer
-from API.mixins import EditorPermsMixin
+from API.mixins import EditorPermsMixin, UserQuerySetMixin
 
 
  
-class ProductDetailAPIView(EditorPermsMixin, generics.RetrieveAPIView):
+class ProductDetailAPIView(UserQuerySetMixin, EditorPermsMixin, generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     # lookup_field = 'pk'
 
-class ProductUpdateAPIView(EditorPermsMixin, generics.UpdateAPIView):
+class ProductUpdateAPIView(UserQuerySetMixin, EditorPermsMixin, generics.UpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
@@ -24,7 +24,7 @@ class ProductUpdateAPIView(EditorPermsMixin, generics.UpdateAPIView):
         if not instance.content:
             instance.content = instance.title
 
-class ProductDeleteAPIView(EditorPermsMixin,generics.DestroyAPIView):
+class ProductDeleteAPIView(UserQuerySetMixin, EditorPermsMixin,generics.DestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     # lookup_field = 'pk'
@@ -34,7 +34,7 @@ class ProductDeleteAPIView(EditorPermsMixin,generics.DestroyAPIView):
     
 
 
-class ProductListCreateAPIView(EditorPermsMixin, generics.ListCreateAPIView):
+class ProductListCreateAPIView(UserQuerySetMixin, EditorPermsMixin, generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
@@ -45,7 +45,13 @@ class ProductListCreateAPIView(EditorPermsMixin, generics.ListCreateAPIView):
         content = serializer.validated_data.get('content') or None
         if content is None:
             content = title
-        serializer.save(content=content) #form.save() model.save()
+        serializer.save(user=self.request.user, content=content) #form.save() model.save()
+
+    # def get_queryset(self, *args, **kwargs):
+    #     qs = super().get_queryset(*args, **kwargs)
+    #     request = self.request
+    #     user = request.user
+    #     return qs.filter(user=request.user)
 
 class ProductListAPIView(generics.ListAPIView):
     '''
