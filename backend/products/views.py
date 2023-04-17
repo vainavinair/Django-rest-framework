@@ -45,7 +45,7 @@ class ProductListCreateAPIView(EditorPermsMixin, generics.ListCreateAPIView):
         content = serializer.validated_data.get('content') or None
         if content is None:
             content = title
-        serializer.save(content=content)
+        serializer.save(content=content) #form.save() model.save()
 
 class ProductListAPIView(generics.ListAPIView):
     '''
