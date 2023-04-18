@@ -7,8 +7,8 @@ from .validators import validate_title, unique_title, validate_title_no_hello
 
 class ProductSerializer(serializers.ModelSerializer):
     owner = UserPublicSerailiezer(source='user', read_only=True)
-    my_user_data = serializers.SerializerMethodField(read_only=True)
-    my_discount = serializers.SerializerMethodField(read_only=True)
+    # my_user_data = serializers.SerializerMethodField(read_only=True)
+    # my_discount = serializers.SerializerMethodField(read_only=True)
     edit_url = serializers.SerializerMethodField(read_only=True) 
     url = serializers.HyperlinkedIdentityField(view_name="product-detail", lookup_field='pk')
     # email = serializers.EmailField(write_only=True) #wont show up on read operations
@@ -24,8 +24,8 @@ class ProductSerializer(serializers.ModelSerializer):
             'content',
             'price',
             'sale_price',
-            'my_discount',
-            'my_user_data'
+            # 'my_discount',
+            # 'my_user_data'
         ]
     def get_my_user_data(self, object):
         return{
