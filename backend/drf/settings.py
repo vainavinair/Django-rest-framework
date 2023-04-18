@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework.authtoken',
+    'algoliasearch_django',
 
     'API.apps.ApiConfig',
     'products.apps.ProductsConfig',
@@ -151,4 +152,11 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 10,
+}
+
+#add env for these
+ALGOLIA = {
+    'APPLICATION_ID': '6ZPIQUQMOK',
+    'API_KEY': 'f656ffbb8efa8d5298e9932bd13c1a9a',
+    'INDEX_PREFIX': 'cfe'
 }
