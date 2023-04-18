@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     'API.apps.ApiConfig',
     'products.apps.ProductsConfig',
+    'search.apps.SearchConfig',
 ]
 
 MIDDLEWARE = [
